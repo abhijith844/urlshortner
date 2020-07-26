@@ -70,21 +70,38 @@
 <?php
 session_start();
 if (isset($_POST["submit"])) {
-	$conn = mysqli_connect('localhost','root','','url');
 	
-	
+  $conn = mysqli_connect('localhost','root','','url');
 	$longurl = $_POST["urlshort"];
 	$unm = $_SESSION['data'];
 
+  if (filter_var($longurl, FILTER_VALIDATE_URL))
+ {
 	$shorturl = substr(md5(microtime()),rand(0,26),5);
 	$query = "INSERT INTO shorturl (shorturl,longurl,usern) VALUES ('$shorturl','$longurl','$unm') ";
 	$result = mysqli_query($conn,$query);
 	if ($result)
 	{
 		echo "http://localhost/url/$shorturl";
-	}else{
+	}else
+  {
 		echo "error";
 	}
+}
+else
+{
+  $longurlre = "http://$longurl";
+  $shorturl = substr(md5(microtime()),rand(0,26),5);
+  $query = "INSERT INTO shorturl (shorturl,longurl,usern) VALUES ('$shorturl','$longurlre','$unm') ";
+  $result = mysqli_query($conn,$query);
+  if ($result)
+  {
+    echo "http://localhost/url/$shorturl";
+  }else
+  {
+    echo "error";
+  }
+}
 }
 if (isset($_GET["link"]))
  {
